@@ -8,5 +8,5 @@ public record AudioTranscriptionRequest(
     String language,
     String prompt,
     String response_format,
-    Double temperature
+    float temperature
 ) {} 

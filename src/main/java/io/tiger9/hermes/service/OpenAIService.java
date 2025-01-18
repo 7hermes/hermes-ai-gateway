@@ -1,20 +1,29 @@
 package io.tiger9.hermes.service;
 
 
+import io.tiger9.hermes.model.AudioTranscriptionRequest;
 import io.tiger9.hermes.model.ChatCompletionRequest;
-import io.tiger9.hermes.model.PromptMessage;
+import io.tiger9.hermes.model.ImageGenerationRequest;
+import io.tiger9.hermes.model.TextToSpeechRequest;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
+import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.ai.chat.client.ChatClient;
 
 import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.messages.SystemMessage;
-import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.ai.image.*;
+import org.springframework.ai.openai.*;
 import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.ai.openai.api.OpenAiAudioApi;
+import org.springframework.ai.openai.api.OpenAiImageApi;
+import org.springframework.ai.openai.audio.speech.SpeechPrompt;
+import org.springframework.ai.openai.audio.speech.SpeechResponse;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
@@ -44,38 +53,60 @@ public class OpenAIService implements AIService {
 
 
 
-    /*
     @Override
-    public ImageGenerationResponse generateImage(ImageGenerationRequest request) {
-        List<Image> images = imageClient.generateImage(request.getPrompt(), request.getN());
-        
-        ImageGenerationResponse response = new ImageGenerationResponse();
-        response.setCreated(System.currentTimeMillis() / 1000);
-        response.setData(images.stream()
-                .map(img -> {
-                    ImageGenerationResponse.Image image = new ImageGenerationResponse.Image();
-                    image.setUrl(img.getUrl());
-                    return image;
-                })
-                .collect(Collectors.toList()));
-        
-        return response;
+    public ImageResponse generateImage(String apiKey, ImageGenerationRequest request) {
+        ImageModel imageModel = new OpenAiImageModel(new OpenAiImageApi(apiKey));
+        ImageOptions options = ImageOptionsBuilder.builder()
+                .responseFormat(request.responseFormat())
+                .model(request.model())
+                .height(request.height())
+                .N(request.n())
+                .style(request.style())
+                .width(request.width())
+                .build();
+
+        ImagePrompt imagePrompt = new ImagePrompt(request.prompt(), options);
+        return imageModel.call(imagePrompt);
     }
 
-    @Override
-    public String transcribeAudio(AudioTranscriptionRequest request) {
-        return audioClient.transcribe(request.getFile().getResource());
-    }
 
     @Override
-    public Resource generateSpeech(TextToSpeechRequest request) {
-        return audioClient.speech(request.getInput(), request.getVoice());
+    public AudioTranscriptionResponse transcribeAudio(String apiKey, AudioTranscriptionRequest request) {
+        OpenAiAudioApi openAiAudioApi = new OpenAiAudioApi(apiKey);
+        OpenAiAudioTranscriptionModel openAiTranscriptionModel = new OpenAiAudioTranscriptionModel(openAiAudioApi);
+
+        OpenAiAudioTranscriptionOptions options = OpenAiAudioTranscriptionOptions.builder()
+                .language(request.language())
+                .prompt(request.prompt())
+                .temperature(request.temperature())
+                .responseFormat(OpenAiAudioApi.TranscriptResponseFormat.TEXT)
+                .build();
+
+
+        AudioTranscriptionPrompt transcriptionRequest = new AudioTranscriptionPrompt(request.file().getResource(), options);
+        return openAiTranscriptionModel.call(transcriptionRequest);
     }
+
 
     @Override
-    public String getProvider() {
-        return "openai";
+    public Resource generateSpeech(String apiKey, TextToSpeechRequest request) {
+        OpenAiAudioApi openAiAudioApi = new OpenAiAudioApi(apiKey);
+
+        OpenAiAudioSpeechModel openAiAudioSpeechModel = new OpenAiAudioSpeechModel(openAiAudioApi);
+
+        var speechOptions = OpenAiAudioSpeechOptions.builder()
+                .responseFormat(OpenAiAudioApi.SpeechRequest.AudioResponseFormat.MP3)
+                .speed(request.speed())
+                .model(OpenAiAudioApi.TtsModel.TTS_1.value)
+                .build();
+
+        SpeechPrompt speechPrompt = new SpeechPrompt("Hello, this is a text-to-speech example.", speechOptions);
+        SpeechResponse response = openAiAudioSpeechModel.call(speechPrompt);
+
+        byte[] responseAsBytes = response.getResult().getOutput();
+
+        return new ByteArrayResource(responseAsBytes);
     }
 
-     */
+
 } 

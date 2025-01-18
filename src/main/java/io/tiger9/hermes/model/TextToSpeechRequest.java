@@ -1,12 +1,13 @@
 package io.tiger9.hermes.model;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Data
-public class TextToSpeechRequest {
-    private String model;
-    private String input;
-    private String voice;
-    private String response_format;
-    private Double speed;
-} 
+public record TextToSpeechRequest (
+    String model,
+    String input,
+    String voice,
+    @JsonProperty("response_format")
+    String responseFormat,
+    float speed
+)
+{}
