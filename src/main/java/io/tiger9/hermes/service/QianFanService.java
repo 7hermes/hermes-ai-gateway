@@ -1,9 +1,9 @@
 package io.tiger9.hermes.service;
 
-import io.tiger9.hermes.model.AudioTranscriptionRequest;
-import io.tiger9.hermes.model.ChatCompletionRequest;
-import io.tiger9.hermes.model.ImageGenerationRequest;
-import io.tiger9.hermes.model.TextToSpeechRequest;
+import io.tiger9.hermes.dto.AudioTranscriptionRequest;
+import io.tiger9.hermes.dto.ChatCompletionRequest;
+import io.tiger9.hermes.dto.ImageGenerationRequest;
+import io.tiger9.hermes.dto.TextToSpeechRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.ai.chat.model.ChatResponse;

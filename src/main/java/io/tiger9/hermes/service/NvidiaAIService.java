@@ -6,14 +6,11 @@ import io.tiger9.hermes.dto.ChatCompletionRequest;
 import io.tiger9.hermes.dto.ImageGenerationRequest;
 import io.tiger9.hermes.dto.TextToSpeechRequest;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
 import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.ai.chat.client.ChatClient;
-
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatModel;
-
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.image.*;
 import org.springframework.ai.openai.*;
@@ -25,19 +22,25 @@ import org.springframework.ai.openai.audio.speech.SpeechResponse;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Objects;
 
 
 @Slf4j
-@Service("openai")
-public class OpenAIService implements AIService {
+@Service("nvidia")
+public class NvidiaAIService implements AIService {
 
+    private static final String NVIDIA_BASE_URL = "https://integrate.api.nvidia.com";
 
     public ChatResponse generateChatCompletion(
             String apiKey,
             ChatCompletionRequest request) {
-        ChatModel chatModel = new OpenAiChatModel(new OpenAiApi(apiKey)); //TODO Set other parameters
+        OpenAiChatOptions options = OpenAiChatOptions.builder()
+                .model(request.model())
+                .temperature(request.temperature())
+                .maxTokens(request.maxTokens()).build();
+        ChatModel chatModel = new OpenAiChatModel(new OpenAiApi(apiKey), options); //TODO Set other parameters
         ChatClient chatClient = ChatClient.create(chatModel);
 
         List<Message> messages =
@@ -55,7 +58,11 @@ public class OpenAIService implements AIService {
 
     @Override
     public ImageResponse generateImage(String apiKey, ImageGenerationRequest request) {
+
+
+
         ImageModel imageModel = new OpenAiImageModel(new OpenAiImageApi(apiKey));
+
         ImageOptions options = ImageOptionsBuilder.builder()
                 .responseFormat(request.responseFormat())
                 .model(request.model())

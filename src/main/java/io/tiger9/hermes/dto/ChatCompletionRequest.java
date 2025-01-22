@@ -1,4 +1,4 @@
-package io.tiger9.hermes.model;
+package io.tiger9.hermes.dto;
 
 import java.util.List;
 

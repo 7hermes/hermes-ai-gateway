@@ -1,6 +1,6 @@
 package io.tiger9.hermes.service;
 
-import io.tiger9.hermes.model.*;
+import io.tiger9.hermes.dto.*;
 import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;

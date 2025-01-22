@@ -1,6 +1,6 @@
 package io.tiger9.hermes.controller;
 
-import io.tiger9.hermes.model.*;
+import io.tiger9.hermes.dto.*;
 import io.tiger9.hermes.service.AIService;
 import io.tiger9.hermes.service.AIServiceFactory;
 import lombok.RequiredArgsConstructor;

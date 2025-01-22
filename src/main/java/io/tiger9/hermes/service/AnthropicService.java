@@ -1,6 +1,6 @@
 package io.tiger9.hermes.service;
 
-import io.tiger9.hermes.model.*;
+import io.tiger9.hermes.dto.*;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.ai.anthropic.AnthropicChatModel;
@@ -12,6 +12,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 
 import org.springframework.ai.image.ImageResponse;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,6 +49,11 @@ public class AnthropicService implements AIService {
     @Override
     public AudioTranscriptionResponse transcribeAudio(String apiKey, AudioTranscriptionRequest request) {
         throw new UnsupportedOperationException("Audio transcription not supported by Anthropic");
+    }
+
+    @Override
+    public Resource generateSpeech(String apiKey, TextToSpeechRequest request) {
+        throw new UnsupportedOperationException("Speech generation not supported by Anthropic");
     }
 
     /*
